@@ -14,7 +14,52 @@ services:
     ports:
       - "5432:5432"
 
-# TODO добавить сервисы
+  flight-service:
+    build:
+      context: ./v1
+      dockerfile: FlightService/Dockerfile
+    container_name: flight-service
+    restart: on-failure
+    ports:
+      - "8060:8060"
+    depends_on:
+      - postgres
+
+  bonus-service:
+    build:
+      context: ./v1
+      dockerfile: BonusService/Dockerfile
+    container_name: bonus-service
+    restart: on-failure
+    ports:
+      - "8050:8050"
+    depends_on:
+      - postgres
+
+  ticket-service:
+    build:
+      context: ./v1
+      dockerfile: TicketService/Dockerfile
+    container_name: ticket-service
+    restart: on-failure
+    ports:
+      - "8070:8070"
+    depends_on:
+      - postgres
+
+  gateway:
+    build:
+      context: ./v1
+      dockerfile: GatewayService/Dockerfile
+    container_name: gateway
+    restart: on-failure
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+      - flight-service
+      - bonus-service
+      - ticket-service
 
 volumes:
   db-data:
